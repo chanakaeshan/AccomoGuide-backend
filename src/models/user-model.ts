@@ -6,16 +6,7 @@ interface Common {
   userType?: string;
   password?: string;
   userStatus?: string;
-  isVerified?: boolean;
-  verificationToken?: string;
-  dob?: Date;
-  city?: string;
-  phone?: number;
-  occupation?: string;
-  profilePicture?: string | Buffer;
-  coverImage?: string;
   email?:string
-
 }
 
 export interface DUser extends Common {

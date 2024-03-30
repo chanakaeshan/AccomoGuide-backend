@@ -57,11 +57,6 @@ export namespace Util {
       return 0;
     }
   }
-  
-
-
-
-
 
   export async function sendVerificationEmail(
     email: string,

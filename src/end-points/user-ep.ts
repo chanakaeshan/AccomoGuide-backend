@@ -179,41 +179,26 @@ export namespace UserEp {
     }
   }
 
-  export async function signUpUser(
-    req: Request & { file: any },
+  export async function signUpLandlord(
+    req: Request,
     res: Response,
     next: NextFunction
   ) {
     try {
+      console.log("email", req.body.email);
       const isCustomerFound = await UserDao.doesUserExist(req.body.email);
+
       if (isCustomerFound) {
         return res.sendError("Sorry, this email already exists");
       }
 
       const name = req.body.name;
-      const dob = req.body.dob;
-      const city = req.body.city;
-      const phone = req.body.phone;
-      const userType = req.body.userType;
+      const userType = "landlord";
       const password = req.body.password;
       const isVerified = false;
-      const occupation = req.body.occupation;
       const email = req.body.email;
 
-      console.log("req.file", req.file);
       console.log("req.body", req.body);
-
-      const coverImage = req.files["coverImage"]
-        ? `uploads/${req.files["coverImage"][0].filename}`
-        : undefined;
-      const profilePicture = req.files["profilePicture"]
-        ? `uploads/${req.files["profilePicture"][0].filename}`
-        : undefined;
-
-      console.log("profilePicture from request", profilePicture);
-      console.log("coverImage from request", coverImage);
-
-      const verificationToken = Util.generateVerificationToken();
 
       const userData: DUser = {
         name: name,
@@ -221,14 +206,6 @@ export namespace UserEp {
         userType: userType,
         password: password,
         userStatus: UserStatus.PENDING_VERIFICATION,
-        isVerified: isVerified,
-        verificationToken: verificationToken,
-        dob: dob,
-        city: city,
-        phone: phone,
-        occupation: occupation,
-        profilePicture: profilePicture,
-        coverImage: coverImage,
       };
 
       const saveUser = await UserDao.registerAnUser(userData);
@@ -236,19 +213,6 @@ export namespace UserEp {
       if (!saveUser) {
         return res.sendError("Registration failed");
       }
-
-      // Util.sendVerificationEmail(email, verificationToken).then(
-      //   function (response) {
-      //     if (response === 1) {
-      //       console.log('Email Sent Successfully!');
-      //     } else {
-      //       console.log('Failed to Send The Email!');
-      //     }
-      //   },
-      //   function (error) {
-      //     console.log('Email Function Failed!');
-      //   }
-      // );
 
       console.log("saveUser", saveUser);
       return res.sendSuccess(saveUser, "User Registered!");
@@ -258,42 +222,121 @@ export namespace UserEp {
       return res.sendError(err);
     }
   }
+  // export async function signUpUser(
+  //   req: Request & { file: any },
+  //   res: Response,
+  //   next: NextFunction
+  // ) {
+  //   try {
+  //     const isCustomerFound = await UserDao.doesUserExist(req.body.email);
+  //     if (isCustomerFound) {
+  //       return res.sendError("Sorry, this email already exists");
+  //     }
 
-  export async function verifyEmail(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    try {
-      const email = req.query.email as string;
-      const verificationToken = req.query.token as string;
+  //     const name = req.body.name;
+  //     const dob = req.body.dob;
+  //     const city = req.body.city;
+  //     const phone = req.body.phone;
+  //     const userType = req.body.userType;
+  //     const password = req.body.password;
+  //     const isVerified = false;
+  //     const occupation = req.body.occupation;
+  //     const email = req.body.email;
 
-      const user = await UserDao.getUserByEmail(email);
+  //     console.log("req.file", req.file);
+  //     console.log("req.body", req.body);
 
-      if (!user) {
-        return res.sendError("User Not Found");
-      }
+  //     const coverImage = req.files["coverImage"]
+  //       ? `uploads/${req.files["coverImage"][0].filename}`
+  //       : undefined;
+  //     const profilePicture = req.files["profilePicture"]
+  //       ? `uploads/${req.files["profilePicture"][0].filename}`
+  //       : undefined;
 
-      if (user.verificationToken !== verificationToken) {
-        return res.sendError("Invalid verification token");
-      }
+  //     console.log("profilePicture from request", profilePicture);
+  //     console.log("coverImage from request", coverImage);
 
-      const userData: DUser = {
-        userStatus: UserStatus.ACTIVE,
-        isVerified: true,
-        verificationToken: null,
-      };
+  //     const verificationToken = Util.generateVerificationToken();
 
-      const updatedUser = await AdminDao.verifyUser(
-        user._id,
-        userData.userStatus,
-        userData.isVerified,
-        userData.verificationToken
-      );
+  //     const userData: DUser = {
+  //       name: name,
+  //       email: email,
+  //       userType: userType,
+  //       password: password,
+  //       userStatus: UserStatus.PENDING_VERIFICATION,
+  //       isVerified: isVerified,
+  //       verificationToken: verificationToken,
+  //       dob: dob,
+  //       city: city,
+  //       phone: phone,
+  //       occupation: occupation,
+  //       profilePicture: profilePicture,
+  //       coverImage: coverImage,
+  //     };
 
-      res.sendSuccess(updatedUser, "Email verification successful");
-    } catch (err) {
-      return res.sendError("Something Went Wrong");
-    }
-  }
+  //     const saveUser = await UserDao.registerAnUser(userData);
+
+  //     if (!saveUser) {
+  //       return res.sendError("Registration failed");
+  //     }
+
+  //     // Util.sendVerificationEmail(email, verificationToken).then(
+  //     //   function (response) {
+  //     //     if (response === 1) {
+  //     //       console.log('Email Sent Successfully!');
+  //     //     } else {
+  //     //       console.log('Failed to Send The Email!');
+  //     //     }
+  //     //   },
+  //     //   function (error) {
+  //     //     console.log('Email Function Failed!');
+  //     //   }
+  //     // );
+
+  //     console.log("saveUser", saveUser);
+  //     return res.sendSuccess(saveUser, "User Registered!");
+  //     // }
+  //     // );
+  //   } catch (err) {
+  //     return res.sendError(err);
+  //   }
+  // }
+
+  // export async function verifyEmail(
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction
+  // ) {
+  //   try {
+  //     const email = req.query.email as string;
+  //     const verificationToken = req.query.token as string;
+
+  //     const user = await UserDao.getUserByEmail(email);
+
+  //     if (!user) {
+  //       return res.sendError("User Not Found");
+  //     }
+
+  //     if (user.verificationToken !== verificationToken) {
+  //       return res.sendError("Invalid verification token");
+  //     }
+
+  //     const userData: DUser = {
+  //       userStatus: UserStatus.ACTIVE,
+  //       isVerified: true,
+  //       verificationToken: null,
+  //     };
+
+  //     const updatedUser = await AdminDao.verifyUser(
+  //       user._id,
+  //       userData.userStatus,
+  //       userData.isVerified,
+  //       userData.verificationToken
+  //     );
+
+  //     res.sendSuccess(updatedUser, "Email verification successful");
+  //   } catch (err) {
+  //     return res.sendError("Something Went Wrong");
+  //   }
+  // }
 }

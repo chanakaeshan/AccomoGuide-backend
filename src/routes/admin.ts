@@ -16,10 +16,7 @@ export function initAdminRoutes(app: Express) {
 
   //this route is to block or unblock users for admin
   app.post(
-    "/api/auth/update/user-status",
-    Authentication.superAdminUserVerification,
-    AdminEp.blockAUserByAdminValidationRules(),
-    AdminEp.blockAUserByAdmin
+    "/api/auth/update/user-status",Authentication.superAdminUserVerification,AdminEp.blockAUserByAdminValidationRules(),AdminEp.blockAUserByAdmin
   );
 
   app.get(
