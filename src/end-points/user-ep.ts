@@ -31,10 +31,6 @@ export namespace UserEp {
       check("remember")
         .notEmpty()
         .withMessage("remember is required")
-        .isString()
-        .withMessage("remember is not a String")
-        .isIn(["TRUE", "FALSE"])
-        .withMessage("remember is not valid type"),
     ];
   }
   // export function signUpWithEmailValidationRules(): ValidationChain[] {
@@ -61,15 +57,20 @@ export namespace UserEp {
       const errors = validationResult(req);
 
       if (!errors.isEmpty()) {
+        console.log("inside errors");
         return res.sendError(errors.array()[0]["msg"]);
       }
 
       const email = req.body.email;
       const password = req.body.password;
       const loginMethod = req.body.loginMethod;
-      const remember = !!req.body.remember;
+      let remember = req.body.remember;
 
-      console.log("email", email);
+      if (remember === 1) {
+        remember = true;
+      }
+
+      console.log("remember", remember);
 
       if (loginMethod == LoginMethod.EMAIL) {
         let user: any = await User.findOne({ email: email });
@@ -92,6 +93,7 @@ export namespace UserEp {
         return res.sendError("Not A Valid login Method");
       }
     } catch (err) {
+      console.log("error===>", err);
       return res.sendError(err);
     }
   }
