@@ -28,9 +28,7 @@ export namespace UserEp {
         .withMessage("loginMethod is not a String")
         .isIn([LoginMethod.EMAIL])
         .withMessage("loginMethod is not valid type"),
-      check("remember")
-        .notEmpty()
-        .withMessage("remember is required")
+      check("remember").notEmpty().withMessage("remember is required"),
     ];
   }
   // export function signUpWithEmailValidationRules(): ValidationChain[] {
@@ -78,6 +76,9 @@ export namespace UserEp {
           return res.sendError("User Not Found in the System");
         }
 
+        const user_toGetType = await UserDao.getUserByEmail(email);
+        console.log("user", user_toGetType);
+
         UserDao.loginWithEmail(email, password, loginMethod, remember, user)
           .then((token: string) => {
             res.cookie("token", token, {
@@ -86,7 +87,10 @@ export namespace UserEp {
               maxAge: 3600000 * 24 * 30,
             });
 
-            res.sendSuccess(token, "Successfully Logged In!");
+            res.sendSuccess(
+              { token: token, userType: user_toGetType.userType },
+              "Successfully Logged In!"
+            );
           })
           .catch(next);
       } else {
@@ -181,6 +185,49 @@ export namespace UserEp {
     }
   }
 
+  export async function registerAUserByWebMaster(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      console.log("email", req.body.email);
+      const isCustomerFound = await UserDao.doesUserExist(req.body.email);
+
+      if (isCustomerFound) {
+        return res.sendError("Sorry, this email already exists");
+      }
+
+      const name = req.body.name;
+      const userType = req.body.userType;
+      const password = req.body.password;
+      const email = req.body.email;
+
+      console.log("req.body", req.body);
+
+      const userData: DUser = {
+        name: name,
+        email: email,
+        userType: userType,
+        password: password,
+        userStatus: UserStatus.ACTIVE,
+      };
+
+      const saveUser = await UserDao.registerAnUser(userData);
+
+      if (!saveUser) {
+        return res.sendError("Registration failed");
+      }
+
+      console.log("saveUser", saveUser);
+      return res.sendSuccess(saveUser, "User Registered!");
+      // }
+      // );
+    } catch (err) {
+      return res.sendError(err);
+    }
+  }
+
   export async function signUpLandlord(
     req: Request,
     res: Response,
@@ -207,7 +254,7 @@ export namespace UserEp {
         email: email,
         userType: userType,
         password: password,
-        userStatus: UserStatus.PENDING_VERIFICATION,
+        userStatus: UserStatus.ACTIVE,
       };
 
       const saveUser = await UserDao.registerAnUser(userData);

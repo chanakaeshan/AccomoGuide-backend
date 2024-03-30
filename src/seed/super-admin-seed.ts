@@ -5,19 +5,19 @@ import User from "../schemas/user-schema";
 
 export default async function seedSuperAdmin() {
   const data01: DUser = {
-    name: "super admin",
-    email: "superadmin@tempmail.com",
-    userType: UserType.SUPER_ADMIN,
+    name: "Web Master",
+    email: "webmaster@mail.com",
+    userType: UserType.WEB_MASTER,
     password: "abc123",
     userStatus: UserStatus.ACTIVE,
   };
 
-  const superAdmin = await createSuperAdmin(data01);
+  const webMaster = await createWebMaster(data01);
 
-  return [superAdmin];
+  return [webMaster];
 }
 
-async function createSuperAdmin(data: DUser) {
+async function createWebMaster(data: DUser) {
   const existingUser = await User.findOne({ email: data.email });
   if (existingUser) {
     return existingUser;

@@ -21,6 +21,7 @@ export function initUserRoutes(app: Express) {
     UserEp.authenticateWithEmail
   );
   app.post("/api/public/signup/landlord", UserEp.signUpLandlord);
+  app.post("/api/public/signup/accounts", UserEp.registerAUserByWebMaster);
 
   /* AUTH ROUTES */
   app.get("/api/auth/get/user", UserEp.getUserDetails);

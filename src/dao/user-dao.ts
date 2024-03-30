@@ -60,6 +60,7 @@ export namespace UserDao {
   export async function getUserByEmail(email: string): Promise<IUser | null> {
     return await User.findOne({ email: email });
   }
+
   export async function getUserById(id: any): Promise<IUser | null> {
     return await User.findOne({ _id: id });
   }
