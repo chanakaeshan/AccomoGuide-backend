@@ -17,11 +17,11 @@ export function initUserRoutes(app: Express) {
   /* PUBLIC ROUTES */
   app.post(
     "/api/public/login",
-    UserEp.authenticateWithEmailValidationRules(),
+    // UserEp.authenticateWithEmailValidationRules(),
     UserEp.authenticateWithEmail
   );
   app.post("/api/public/signup/landlord", UserEp.signUpLandlord);
-  app.post("/api/public/signup/accounts", UserEp.registerAUserByWebMaster);
+  app.post("/api/auth/signup/accounts", UserEp.registerAUserByWebMaster);
 
   /* AUTH ROUTES */
   app.get("/api/auth/get/user", UserEp.getUserDetails);

@@ -60,39 +60,39 @@ export class PostsMiddleware {
       );
     }
   }
-  public static async canDeleteComment(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    const commentId = req.params.commentId;
-    const postId = req.params.postId;
-    const userId = req.params.userId;
+  // public static async canDeleteComment(
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction
+  // ) {
+  //   const commentId = req.params.commentId;
+  //   const postId = req.params.postId;
+  //   const userId = req.params.userId;
 
-       console.log("postId delete comment", postId);
-      console.log("commentId delete comment", commentId);
-      console.log("userId delete comment", userId);
+  //      console.log("postId delete comment", postId);
+  //     console.log("commentId delete comment", commentId);
+  //     console.log("userId delete comment", userId);
 
-    try {
-      const comment = await PostsDao.getCommentById(postId, commentId);
+  //   try {
+  //     const comment = await PostsDao.getCommentById(postId, commentId);
 
-      if (!comment) {
-        return res.sendError("Comment not found !!!!!!!!!");
-      }
+  //     if (!comment) {
+  //       return res.sendError("Comment not found !!!!!!!!!");
+  //     }
 
-      if (comment.userId.toString() !== userId.toString()) {
-        return res.sendError(
-          "You do not have permission to delete this comment"
-        );
-      }
+  //     if (comment.userId.toString() !== userId.toString()) {
+  //       return res.sendError(
+  //         "You do not have permission to delete this comment"
+  //       );
+  //     }
 
-      next();
-    } catch (err) {
-      console.error("Error checking comment deletion permission:", err);
-      return res.sendError(
-        "Something went wrong while checking comment deletion permission"
-      );
-    }
-  }
+  //     next();
+  //   } catch (err) {
+  //     console.error("Error checking comment deletion permission:", err);
+  //     return res.sendError(
+  //       "Something went wrong while checking comment deletion permission"
+  //     );
+  //   }
+  // }
 
 }

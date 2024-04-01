@@ -3,6 +3,7 @@ const UserType = {
   WARDEN: "WARDEN",
   LANDLORD: "LANDLORD",
   STUDENT: "STUDENT",
+  //==================================
   SUPER_ADMIN: "SUPER_ADMIN",
   DONOR: "DONOR",
   RECEIVER: "RECEIVER",

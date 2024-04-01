@@ -1,48 +1,49 @@
-import { Schema, Types, model, Document } from 'mongoose';
+import { Schema, Types, model, Document } from "mongoose";
 var mongoose = require("mongoose");
-
-
 
 const postsSchema = new mongoose.Schema({
   userId: {
     type: Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
   },
-  content: {
+  title: {
     type: String,
     required: true,
   },
-  images: {
-    type: Buffer,
-    required: false,
+  description: {
+    type: String,
+    required: true,
   },
-  likesFrom: [
-    {
-      userId: {
-        type: Types.ObjectId,
-        ref: 'User',
-        required: true,
-      },
+  price: {
+    type: String,
+    required: true,
+  },
+  approval: {
+    isApproved: {
+      type: Boolean,
     },
-  ],
-  commentsFrom: [
-    {
-      userId: {
-        type: Types.ObjectId,
-        ref: 'User',
-        required: true,
-      },
-      text: {
-        type: String,
-        required: true,
-      },
-      createdAt: {
-        type: Date,
-        default: Date.now,
-      },
+    approvedBy: {
+      type: Types.ObjectId,
+      ref: "User",
     },
-  ],
+    rejectedBy: {
+      type: Types.ObjectId,
+      ref: "User",
+    },
+  },
+
+  studentRequest: {
+    requestedBy: {
+      //student Id
+      type: Types.ObjectId,
+      ref: "User",
+    },
+    isAccepted: {
+      type: Boolean,
+    },
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,

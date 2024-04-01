@@ -14,6 +14,7 @@ import { Validations } from "../common/validation";
 import { Util } from "../common/Util";
 import UserStatus from "../enums/UserStatus";
 import upload from "../middleware/upload-images";
+import UserType from "../enums/UserType";
 const { ObjectId } = require("mongodb");
 
 export namespace UserEp {
@@ -21,13 +22,7 @@ export namespace UserEp {
     return [
       Validations.email(),
       Validations.password(),
-      check("loginMethod")
-        .notEmpty()
-        .withMessage("loginMethod is required")
-        .isString()
-        .withMessage("loginMethod is not a String")
-        .isIn([LoginMethod.EMAIL])
-        .withMessage("loginMethod is not valid type"),
+
       check("remember").notEmpty().withMessage("remember is required"),
     ];
   }
@@ -61,7 +56,7 @@ export namespace UserEp {
 
       const email = req.body.email;
       const password = req.body.password;
-      const loginMethod = req.body.loginMethod;
+      const loginMethod = "EMAIL";
       let remember = req.body.remember;
 
       if (remember === 1) {
@@ -77,7 +72,7 @@ export namespace UserEp {
         }
 
         const user_toGetType = await UserDao.getUserByEmail(email);
-        console.log("user", user_toGetType);
+        console.log("user_toGetType", user_toGetType);
 
         UserDao.loginWithEmail(email, password, loginMethod, remember, user)
           .then((token: string) => {
@@ -88,7 +83,11 @@ export namespace UserEp {
             });
 
             res.sendSuccess(
-              { token: token, userType: user_toGetType.userType },
+              {
+                token: token,
+                userType: user_toGetType.userType,
+                userId: user._id,
+              },
               "Successfully Logged In!"
             );
           })
@@ -203,6 +202,13 @@ export namespace UserEp {
       const password = req.body.password;
       const email = req.body.email;
 
+      if (!UserType.WEB_MASTER) {
+        console.log("UserType.WEB_MASTER", UserType.WEB_MASTER);
+        return res.sendError(
+          "Sorry, this operation can only be performed by a Web Master"
+        );
+      }
+
       console.log("req.body", req.body);
 
       const userData: DUser = {
@@ -242,9 +248,9 @@ export namespace UserEp {
       }
 
       const name = req.body.name;
-      const userType = "landlord";
+      const userType = "LANDLORD";
       const password = req.body.password;
-      const isVerified = false;
+      const isVerified = true;
       const email = req.body.email;
 
       console.log("req.body", req.body);
