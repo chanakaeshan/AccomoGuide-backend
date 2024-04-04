@@ -82,6 +82,8 @@ export namespace UserEp {
               maxAge: 3600000 * 24 * 30,
             });
 
+            console.log("token-->",token)
+
             res.sendSuccess(
               {
                 token: token,
@@ -106,9 +108,12 @@ export namespace UserEp {
     res: Response,
     next: NextFunction
   ) {
+    console.log("inside getUserDetails")
     try {
+      console.log("req.user:::::::::::::::::::::", req.user);
       res.sendSuccess(req.user, "User Found!");
     } catch (err) {
+      console.log("inside catch")
       return res.sendError("Something Went Wrong!!");
     }
   }

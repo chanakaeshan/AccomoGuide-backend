@@ -25,7 +25,8 @@ mongoose.connect(process.env.DATABASE, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
-}).then(() => {console.log("bdconnected")}).catch((err: any) => {console.error(err)});
+})
+// .then(() => {console.log("bdconnected")}).catch((err: any) => {console.error(err)});
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
