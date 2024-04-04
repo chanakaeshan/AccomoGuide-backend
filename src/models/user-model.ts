@@ -6,7 +6,8 @@ interface Common {
   userType?: string;
   password?: string;
   userStatus?: string;
-  email?:string
+  email?:string;
+  
 }
 
 export interface DUser extends Common {

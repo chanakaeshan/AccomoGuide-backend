@@ -37,13 +37,24 @@ export namespace LandLordEp {
       const title = req.body.title;
       const description = req.body.description;
       const price = req.body.price;
+      const location = JSON.parse(req.body.location);
+      const latitude = location.lat;
+      const longitude = location.lng;
 
       const userId = req.params.userId;
+
+      console.log("req.file.path",req.file.path)
+
+      const imageUrl = req.file ? req.file.path : '';
 
       console.log("title", title);
       console.log("description", description);
       console.log("price", price);
       console.log("userId", userId);
+      console.log('imageUrl', imageUrl);
+      console.log('location::', location);
+      console.log('latitude::', latitude);
+      console.log('longitude::', longitude);
 
       const objectId = new ObjectId(userId);
 
@@ -52,7 +63,14 @@ export namespace LandLordEp {
         title: title,
         description: description,
         price: price,
+        imageUrl: imageUrl,
+        location:{
+          latitude:latitude,
+          longitude:longitude
+        },
       };
+
+      console.log("postdata", postData)
 
       const savedPost = await PostsDao.savePost(postData);
 

@@ -32,6 +32,19 @@ const postsSchema = new mongoose.Schema({
       ref: "User",
     },
   },
+  imageUrl:{
+    type: String,
+    // required: true,
+  },
+  location:{
+    latitude:{
+      type: String,
+    },
+    longitude:{
+      type: String,
+    },
+    }
+  ,
 
   studentRequest: {
     requestedBy: {

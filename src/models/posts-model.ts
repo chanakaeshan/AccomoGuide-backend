@@ -9,6 +9,8 @@ interface Common {
 
   approval?: Object;
   studentRequest?: Object;
+  imageUrl?: string;
+  location?:Object;
 }
 
 export interface DPosts extends Common {}

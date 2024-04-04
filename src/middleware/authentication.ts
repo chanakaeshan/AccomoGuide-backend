@@ -4,10 +4,12 @@ import UserType from "../enums/UserType";
 
 export class Authentication {
   public static verifyToken(req: Request, res: Response, next: NextFunction) {
+    console.log("inside verifyToken")
     return passport.authenticate(
       "jwt",
       { session: false },
       (err: any, user: any, info: any) => {
+        console.log("inside passport.authenticate callback",user)
         if (err || !user) {
           // AppLogger.error(`Login Failed. reason: ${info}`);
           console.log(`Login Failed. reason: ${info}`);
@@ -15,6 +17,7 @@ export class Authentication {
         }
 
         req.user = user;
+        console.log("req.user from auth.ts", req.user)
         req.body.user = user._id;
 
         //console.log(req.user);
@@ -30,7 +33,7 @@ export class Authentication {
     next: NextFunction
   ) {
     const userData: any = req.user;
-    if (userData.userType === UserType.SUPER_ADMIN) {
+    if (userData.userType === UserType.WEB_MASTER) {
       next();
     } else {
       return res.status(403).json({
@@ -41,15 +44,14 @@ export class Authentication {
   }
 
   //level01 user validation
-  public static donorUserVerification(
+  public static studentUserVerification(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
     const userData: any = req.user;
     if (
-      userData.userType === UserType.DONOR ||
-      userData.userType === UserType.SUPER_ADMIN
+      userData.userType === UserType.STUDENT
 
     ) {
       next();
@@ -61,16 +63,32 @@ export class Authentication {
     }
   }
   //level02 user validation
-  public static patient
-  UserVerification(
+  public static wardenUserVerification(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
     const userData: any = req.user;
     if (
-      userData.userType === UserType.RECEIVER ||
-      userData.userType === UserType.SUPER_ADMIN
+      userData.userType === UserType.WARDEN
+    ) {
+      next();
+    } else {
+      return res.status(403).json({
+        success: false,
+        message: "No authorization to access this route!",
+      });
+    }
+  }
+  //level02 user validation
+  public static landLordUserVerification(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const userData: any = req.user;
+    if (
+      userData.userType === UserType.LANDLORD
     ) {
       next();
     } else {

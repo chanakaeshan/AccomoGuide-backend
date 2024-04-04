@@ -1,6 +1,7 @@
 import { Express } from "express";
 import { UserEp } from "../end-points/user-ep";
 import multer from "multer";
+import { Authentication } from "../middleware/authentication";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -21,7 +22,7 @@ export function initUserRoutes(app: Express) {
     UserEp.authenticateWithEmail
   );
   app.post("/api/public/signup/landlord", UserEp.signUpLandlord);
-  app.post("/api/auth/signup/accounts", UserEp.registerAUserByWebMaster);
+  app.post("/api/auth/signup/accounts", Authentication.superAdminUserVerification,UserEp.registerAUserByWebMaster);
 
   /* AUTH ROUTES */
   app.get("/api/auth/get/user", UserEp.getUserDetails);

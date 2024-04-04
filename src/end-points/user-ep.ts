@@ -75,7 +75,7 @@ export namespace UserEp {
         console.log("user_toGetType", user_toGetType);
 
         UserDao.loginWithEmail(email, password, loginMethod, remember, user)
-          .then((token: string) => {
+          .then((token: any) => {
             res.cookie("token", token, {
               httpOnly: true,
               secure: false,
@@ -86,7 +86,7 @@ export namespace UserEp {
 
             res.sendSuccess(
               {
-                token: token,
+                token:token.token,
                 userType: user_toGetType.userType,
                 userId: user._id,
               },
@@ -266,6 +266,7 @@ export namespace UserEp {
         userType: userType,
         password: password,
         userStatus: UserStatus.ACTIVE,
+        
       };
 
       const saveUser = await UserDao.registerAnUser(userData);
