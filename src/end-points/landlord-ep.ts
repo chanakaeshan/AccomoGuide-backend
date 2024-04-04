@@ -105,6 +105,27 @@ export namespace LandLordEp {
       return res.sendError("Something Went Wrong!!");
     }
   }
+  export async function viewPropertiesWithRequests(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    console.log("inside viewPropertiesWithRequests")
+    const userId = req.params.userId;
+
+    try {
+      const userPosts = await PostsDao.viewPostsWithRequestsByLandlord(
+        userId
+      );
+
+      console.log("userPosts", userPosts);
+      userPosts
+        ? res.sendSuccess(userPosts, "User posts Found!")
+        : res.sendError("No posts found");
+    } catch (err) {
+      return res.sendError("Something Went Wrong!!");
+    }
+  }
 
   export async function deletePublishedProperty(
     req: Request,

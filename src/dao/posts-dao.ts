@@ -149,14 +149,39 @@ export namespace PostsDao {
     }
   }
 
-  export async function getAllPropertyPosts(): Promise<IPosts[]> {
+  export async function getAllPropertyPostsWithNoApprovalOrRejection(): Promise<IPosts[]> {
     try {
-      const allPosts = await Posts.find().exec();
+      // Exclude records where "approval" field exists
+      const allPosts = await Posts.find({ approval: { $exists: false } }).exec();
       return allPosts;
     } catch (error) {
       throw error;
     }
   }
+  export async function viewPostsWithRequestsByLandlord(userId: any): Promise<IPosts[]> {
+    try {
+      console.log("userId LANDLORD", userId);
+      const allPosts = await Posts.find({ 
+        
+          userId: userId, 
+          studentRequest: { 
+              $exists: true,
+          
+          }
+      
+      
+      }).exec();
+      console.log("allPosts", allPosts);
+      return allPosts;
+    } catch (error) {
+      throw error;
+    }
+  }
+  
+  
+  
+  
+  
   export async function getApprovedPropertyPosts(): Promise<IPosts[]> {
     try {
       const approvedPosts = await Posts.find({

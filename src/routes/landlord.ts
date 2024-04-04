@@ -25,6 +25,11 @@ export function initLandLordRoutes(app: Express) {
     Authentication.landLordUserVerification,
     LandLordEp.viewPublishedProperties
   );
+  app.get(
+    "/api/auth/view/properties/student/requests/:userId",
+    Authentication.landLordUserVerification,
+    LandLordEp.viewPropertiesWithRequests
+  );
   app.post(
     "/api/auth/delete/property/:postId/:userId",
     Authentication.landLordUserVerification,

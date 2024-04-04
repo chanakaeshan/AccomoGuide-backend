@@ -24,7 +24,7 @@ export namespace WardenEp {
     }
     
     try {
-      const userPosts = await PostsDao.getAllPropertyPosts();
+      const userPosts = await PostsDao.getAllPropertyPostsWithNoApprovalOrRejection();
 
       console.log("userPosts", userPosts);
       userPosts
