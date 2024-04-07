@@ -4,12 +4,12 @@ import UserType from "../enums/UserType";
 
 export class Authentication {
   public static verifyToken(req: Request, res: Response, next: NextFunction) {
-    console.log("inside verifyToken")
+    // console.log("inside verifyToken")
     return passport.authenticate(
       "jwt",
       { session: false },
       (err: any, user: any, info: any) => {
-        console.log("inside passport.authenticate callback",user)
+        // console.log("inside passport.authenticate callback",user)
         if (err || !user) {
           // AppLogger.error(`Login Failed. reason: ${info}`);
           console.log(`Login Failed. reason: ${info}`);
@@ -17,7 +17,7 @@ export class Authentication {
         }
 
         req.user = user;
-        console.log("req.user from auth.ts", req.user)
+        // console.log("req.user from auth.ts", req.user)
         req.body.user = user._id;
 
         //console.log(req.user);

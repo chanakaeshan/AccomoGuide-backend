@@ -108,9 +108,9 @@ export namespace UserEp {
     res: Response,
     next: NextFunction
   ) {
-    console.log("inside getUserDetails")
+    // console.log("inside getUserDetails")
     try {
-      console.log("req.user:::::::::::::::::::::", req.user);
+      // console.log("req.user:::::::::::::::::::::", req.user);
       res.sendSuccess(req.user, "User Found!");
     } catch (err) {
       console.log("inside catch")

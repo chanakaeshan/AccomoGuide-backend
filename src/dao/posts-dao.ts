@@ -24,10 +24,11 @@ export namespace PostsDao {
   }
 
   export async function updatePost(
-    postId: string,
+    postId: ObjectId,
     updatedData: any
   ): Promise<DPosts | null> {
     try {
+      console.log("inside updatePost dao")
       const post = await Posts.findOneAndUpdate(
         { _id: new ObjectId(postId) },
         { $set: updatedData },
@@ -37,7 +38,7 @@ export namespace PostsDao {
       return post;
     } catch (error) {
       console.error("Error updating post:", error);
-      return null;
+      throw(error)
     }
   }
   export async function approvePost(

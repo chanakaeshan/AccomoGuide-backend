@@ -85,6 +85,65 @@ export namespace LandLordEp {
       return res.sendError(err);
     }
   }
+  export async function updatePublishedProperty(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.sendError(errors.array()[0]["msg"]);
+      }
+
+      const title = req.body.title;
+      const description = req.body.description;
+      const price = req.body.price;
+      const location = JSON.parse(req.body.location);
+      const latitude = location.lat;
+      const longitude = location.lng;
+
+      const userId = req.params.userId;
+      const postId = req.params.postId;
+      console.log("location",location)
+    
+
+
+
+      const imageUrl = req.file ? req.file.path : '';
+
+
+
+      const objectId = new ObjectId(userId);
+      const postObjectId = new ObjectId(postId);
+
+      const postData: DPosts = {
+        userId: objectId,
+        title: title,
+        description: description,
+        price: price,
+        imageUrl: imageUrl,
+        location:{
+          latitude:latitude,
+          longitude:longitude
+        },
+      };
+
+      console.log("update postdata", postData)
+
+      const savedPost = await PostsDao.updatePost(postObjectId,postData);
+
+      if (!savedPost) {
+        return res.sendError("Failed to save post");
+      }
+
+      console.log("savedPost", savedPost);
+      return res.sendSuccess(savedPost, "Post Saved Successfully!");
+    } catch (err) {
+      console.log("in catch", err);
+      return res.sendError(err);
+    }
+  }
   export async function viewPublishedProperties(
     req: Request,
     res: Response,
@@ -97,7 +156,7 @@ export namespace LandLordEp {
         userId
       );
 
-      console.log("userPosts", userPosts);
+      // console.log("userPosts", userPosts);
       userPosts
         ? res.sendSuccess(userPosts, "User posts Found!")
         : res.sendError("No posts found");
@@ -132,9 +191,13 @@ export namespace LandLordEp {
     res: Response,
     next: NextFunction
   ) {
+    console.log("inside deletePublishedProperty")
     try {
-      const propertyId = req.params.postId;
-      const landlordId = req.params.userId;
+      const propertyId = req.params.userId;
+      const landlordId = req.params.postId;
+
+      console.log("propertyId", propertyId);
+      console.log("landlordId", landlordId);
 
       const post = await PostsDao.getPostById(propertyId);
 
@@ -158,6 +221,37 @@ export namespace LandLordEp {
       return res.sendError(err);
     }
   }
+  // export async function updatePublishedProperty(
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction
+  // ) {
+  //   try {
+  //     const propertyId = req.params.postId;
+  //     const landlordId = req.params.userId;
+  
+  //     const post = await PostsDao.getPostById(propertyId);
+  
+  //     if (!post) {
+  //       return res.sendError("Post not found");
+  //     }
+  
+  //     if (post.userId.toString() !== landlordId) {
+  //       return res.sendError("You do not have permission to update this post");
+  //     }
+  
+  //     const updatedPost = await PostsDao.updatePost(propertyId, req.body);
+  
+  //     if (!updatedPost) {
+  //       return res.sendError("Failed to update post");
+  //     }
+  
+  //     return res.sendSuccess(updatedPost, "Post Updated Successfully!");
+  //   } catch (err) {
+  //     console.log("Error:", err);
+  //     return res.sendError(err);
+  //   }
+  // }
   export async function acceptStudentRequest(
     req: Request,
     res: Response,

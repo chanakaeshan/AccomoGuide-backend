@@ -19,6 +19,12 @@ const upload = multer({ storage: storage });
 export function initLandLordRoutes(app: Express) {
   /* PUBLIC ROUTES */
   app.post("/api/auth/create/landlord/post/:userId",Authentication.landLordUserVerification,upload.single('image'), LandLordEp.createPost);
+  app.post(
+    "/api/auth/update/property/:postId/:userId",
+    Authentication.landLordUserVerification,
+    upload.single('image'),
+    LandLordEp.updatePublishedProperty
+  );
 
   app.get(
     "/api/auth/view/properties/:userId",
@@ -35,6 +41,7 @@ export function initLandLordRoutes(app: Express) {
     Authentication.landLordUserVerification,
     LandLordEp.deletePublishedProperty
   );
+
   app.post(
     "/api/auth/accept/student/request/:postId/:landlordId",
     Authentication.landLordUserVerification,
