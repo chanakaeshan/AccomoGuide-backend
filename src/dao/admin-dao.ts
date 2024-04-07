@@ -3,6 +3,7 @@ import { ApplicationError } from "../common/application-error";
 import { DUser, IUser } from "../models/user-model";
 import User from "../schemas/user-schema";
 import UserType from "../enums/UserType";
+import Articles from "../schemas/article-schema";
 
 export namespace AdminDao {
   export async function registerAnUser(data: DUser): Promise<IUser> {
@@ -77,10 +78,30 @@ export namespace AdminDao {
       .limit(limit);
     return userFound;
   }
+  export async function getArticles() {
+    try {
+      const allArticles = await Articles.find();
+      return allArticles;
+    } catch (error) {
+      // Handle any errors that occur during the database operation
+      throw error;
+    }
+  }
+  
+  
   export async function getUsersAll() {
     const userFound = await User.find({
       userType: { $ne: UserType.SUPER_ADMIN },
     });
     return userFound;
+  }
+
+  export async function createArticle(articleData:any){
+    //create article and save it to the database
+
+    console.log("article data from dao",articleData)
+    const newArticle=new Articles(articleData);
+    newArticle.save();
+    return newArticle;
   }
 }

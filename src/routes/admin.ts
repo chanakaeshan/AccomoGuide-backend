@@ -13,6 +13,11 @@ export function initAdminRoutes(app: Express) {
     AdminEp.createAnUserByAdminValidationRules(),
     AdminEp.createAnUserByAdmin
   );
+  app.post(
+    "/api/auth/create/article/:adminId",
+    Authentication.superAdminUserVerification,
+    AdminEp.createArticle
+  );
 
   //this route is to block or unblock users for admin
   app.post(
@@ -28,5 +33,10 @@ export function initAdminRoutes(app: Express) {
   app.get(
     "/api/public/get/user-list",
     AdminEp.getAllUserListTest
+  );
+  
+  app.get(
+    "/api/public/get/articles",
+    AdminEp.getAllArticles
   );
 }

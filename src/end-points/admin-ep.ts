@@ -99,6 +99,46 @@ export namespace AdminEp {
     }
   }
 
+  export async function createArticle(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const adminId = req.params.adminId
+    try {
+
+      const adminUser = await UserDao.getUserById(adminId);
+  
+  
+      if (adminUser?.userType != UserType.WEB_MASTER) {
+        return res.sendError("You do not have permission to delete this post");
+      }
+      //input validation
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.sendError(errors.array()[0]["msg"]);
+      }
+
+      const articleData = {
+        userId: adminId,
+        title: req.body.title,
+        content: req.body.content,
+      };
+
+      console.log("article data",articleData)
+
+      //insert article to the database
+      const saveArticle = await AdminDao.createArticle(articleData);
+      if (!saveArticle) {
+        return res.sendError("Article Creation failed");
+      }
+
+      res.sendSuccess(saveArticle, "Article Created Successfully!");
+    } catch (err) {
+      return res.sendError(err);
+    }
+  }
+
   //block a user by admin validation rules
   export function blockAUserByAdminValidationRules(): ValidationChain[] {
     return [
@@ -171,6 +211,31 @@ export namespace AdminEp {
       const userList = await AdminDao.getUsers(limit, offset);
       if (!userList) {
         return res.sendError("Fetching Users Failed");
+      }
+
+      res.sendSuccess(userList, "Success!");
+    } catch (err) {
+      return res.sendError(err);
+    }
+  }
+  export async function getAllArticles(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      //input validation
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.sendError(errors.array()[0]["msg"]);
+      }
+
+   
+
+      //get user list
+      const userList = await AdminDao.getArticles();
+      if (!userList) {
+        return res.sendError("Fetching Articles Failed");
       }
 
       res.sendSuccess(userList, "Success!");
